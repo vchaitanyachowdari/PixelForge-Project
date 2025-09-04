@@ -2,7 +2,6 @@ import { createApiRouter } from '../presentation/api/router';
 import { errorHandler } from '../presentation/api/middleware/error-handler';
 import { requestLogger, performanceMonitor, metricsCollector } from '../presentation/api/middleware/logging';
 import { rateLimit, securityHeaders, requestSizeLimit, sanitizeInput } from '../presentation/api/middleware/security';
-import { Env } from '../presentation/api/types';
 
 // Create the main application
 const app = createApiRouter();

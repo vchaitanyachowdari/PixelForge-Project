@@ -13,12 +13,22 @@ export class AppError extends Error {
     this.code = code;
     this.isOperational = isOperational;
     
-    Error.captureStackTrace(this, this.constructor);
+    // Set name property for better debugging
+    this.name = this.constructor.name;
+    
+    // Capture stack trace if available (Node.js/V8 specific)
+    const errorConstructor = Error as unknown as {
+      captureStackTrace?: (targetObject: object, constructorOpt?: () => void) => void;
+    };
+    
+    if (typeof errorConstructor.captureStackTrace === 'function') {
+      errorConstructor.captureStackTrace(this, this.constructor as () => void);
+    }
   }
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, field?: string) {
+  constructor(message: string) {
     super(message, 400, 'VALIDATION_ERROR');
     this.name = 'ValidationError';
   }
@@ -52,8 +62,18 @@ export class RateLimitError extends AppError {
   }
 }
 
+// Error logger context interface
+interface ErrorLogContext {
+  userAgent?: string;
+  ip?: string;
+  url?: string;
+  method?: string;
+  requestId?: string;
+  [key: string]: unknown;
+}
+
 // Error logger
-export function logError(error: Error, context: any = {}) {
+export function logError(error: Error, context: ErrorLogContext = {}) {
   const errorLog = {
     timestamp: new Date().toISOString(),
     message: error.message,
@@ -101,7 +121,7 @@ export function errorHandler() {
             error.message,
             requestId
           ),
-          error.statusCode
+          error.statusCode as 400 | 401 | 403 | 404 | 429 | 500
         );
       }
 

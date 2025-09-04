@@ -4,6 +4,11 @@ import { z } from 'zod';
 import { authMiddleware } from '@getmocha/users-service/backend';
 import { ApiContext, createSuccessResponse, createErrorResponse } from '../types';
 
+// Database record interfaces
+interface WalletBalanceRecord {
+  wallet_balance: number;
+}
+
 // Request schemas
 const TopupRequestSchema = z.object({
   amount: z.number().positive('Amount must be positive'),
@@ -33,7 +38,8 @@ app.get('/transactions', authMiddleware, async (c) => {
 
     return c.json(createSuccessResponse(results, 'Transactions retrieved successfully'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'TRANSACTIONS_FETCH_FAILED',
@@ -65,7 +71,7 @@ app.post('/topup', authMiddleware, zValidator('json', TopupRequestSchema), async
       'SELECT wallet_balance FROM users WHERE id = ?'
     ).bind(user.id).all();
 
-    const currentBalance = (results[0] as any)?.wallet_balance || 0;
+    const currentBalance = (results[0] as unknown as WalletBalanceRecord)?.wallet_balance || 0;
     const newBalance = currentBalance + amount;
 
     // Update user balance
@@ -93,7 +99,8 @@ app.post('/topup', authMiddleware, zValidator('json', TopupRequestSchema), async
       transactionAmount: amount,
     }, 'Wallet topped up successfully'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'TOPUP_FAILED',
@@ -120,14 +127,15 @@ app.get('/balance', authMiddleware, async (c) => {
       'SELECT wallet_balance FROM users WHERE id = ?'
     ).bind(user.id).all();
 
-    const balance = (results[0] as any)?.wallet_balance || 0;
+    const balance = (results[0] as unknown as WalletBalanceRecord)?.wallet_balance || 0;
 
     return c.json(createSuccessResponse({
       balance,
       credits: Math.floor(balance / 25),
     }, 'Balance retrieved successfully'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'BALANCE_FETCH_FAILED',

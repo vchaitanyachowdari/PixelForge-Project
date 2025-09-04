@@ -11,10 +11,10 @@ export enum LogLevel {
 
 // Logger interface
 export interface ILogger {
-  error(message: string, data?: any): void;
-  warn(message: string, data?: any): void;
-  info(message: string, data?: any): void;
-  debug(message: string, data?: any): void;
+  error(message: string, data?: Record<string, unknown>): void;
+  warn(message: string, data?: Record<string, unknown>): void;
+  info(message: string, data?: Record<string, unknown>): void;
+  debug(message: string, data?: Record<string, unknown>): void;
 }
 
 // Console logger implementation
@@ -26,7 +26,7 @@ export class ConsoleLogger implements ILogger {
     return levels.indexOf(level) <= levels.indexOf(this.minLevel);
   }
 
-  private formatLog(level: LogLevel, message: string, data?: any) {
+  private formatLog(level: LogLevel, message: string, data?: Record<string, unknown>) {
     const timestamp = new Date().toISOString();
     const logEntry = {
       timestamp,
@@ -38,25 +38,25 @@ export class ConsoleLogger implements ILogger {
     return JSON.stringify(logEntry);
   }
 
-  error(message: string, data?: any): void {
+  error(message: string, data?: Record<string, unknown>): void {
     if (this.shouldLog(LogLevel.ERROR)) {
       console.error(this.formatLog(LogLevel.ERROR, message, data));
     }
   }
 
-  warn(message: string, data?: any): void {
+  warn(message: string, data?: Record<string, unknown>): void {
     if (this.shouldLog(LogLevel.WARN)) {
       console.warn(this.formatLog(LogLevel.WARN, message, data));
     }
   }
 
-  info(message: string, data?: any): void {
+  info(message: string, data?: Record<string, unknown>): void {
     if (this.shouldLog(LogLevel.INFO)) {
       console.log(this.formatLog(LogLevel.INFO, message, data));
     }
   }
 
-  debug(message: string, data?: any): void {
+  debug(message: string, data?: Record<string, unknown>): void {
     if (this.shouldLog(LogLevel.DEBUG)) {
       console.log(this.formatLog(LogLevel.DEBUG, message, data));
     }

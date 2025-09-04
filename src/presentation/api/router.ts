@@ -22,8 +22,8 @@ export function createApiRouter() {
         'https://staging.pixelforge.app'
       ];
       
-      if (!origin) return true; // Allow requests with no origin (mobile apps, etc.)
-      return allowedOrigins.includes(origin);
+      if (!origin) return 'http://localhost:5174'; // Allow requests with no origin (mobile apps, etc.)
+      return allowedOrigins.includes(origin) ? origin : null;
     },
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],

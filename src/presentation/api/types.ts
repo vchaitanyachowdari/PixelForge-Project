@@ -1,6 +1,18 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 
+// User interface from Mocha users service
+export interface User {
+  id: string;
+  email: string;
+  google_user_data?: {
+    name?: string;
+    picture?: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown; // Allow additional properties from the auth service
+}
+
 // Environment bindings interface
 export interface Env {
   DB: D1Database;
@@ -11,14 +23,16 @@ export interface Env {
   GOOGLE_CLOUD_LOCATION: string;
   NODE_ENV: string;
   APP_VERSION: string;
+  INTERNAL_API_KEY?: string;
 }
 
 // Extended Hono context
 export type ApiContext = {
   Bindings: Env;
   Variables: {
-    user?: any;
+    user?: User;
     requestId?: string;
+    sanitizedBody?: unknown;
   };
 };
 

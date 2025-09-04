@@ -72,8 +72,8 @@ export default function ImageGenerator({ onImageGenerated }: ImageGeneratorProps
 
       const generationRequest: GenerationRequest = {
         prompt: finalPrompt,
-        resolution: resolution as any,
-        generationType: generationType as any,
+        resolution: resolution as GenerationRequest['resolution'],
+        generationType: generationType as GenerationRequest['generationType'],
         productImages: images,
       };
 

@@ -3,7 +3,6 @@ import { zValidator } from '@hono/zod-validator';
 import { getCookie, setCookie } from 'hono/cookie';
 import { z } from 'zod';
 import {
-  authMiddleware,
   getOAuthRedirectUrl,
   exchangeCodeForSessionToken,
   deleteSession,
@@ -27,7 +26,8 @@ app.get('/oauth/google/redirect_url', async (c) => {
     });
 
     return c.json(createSuccessResponse({ redirectUrl }, 'OAuth redirect URL generated'));
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'OAUTH_REDIRECT_FAILED',
@@ -57,7 +57,8 @@ app.post('/sessions', zValidator('json', SessionRequestSchema), async (c) => {
     });
 
     return c.json(createSuccessResponse(null, 'Session created successfully'));
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'SESSION_CREATION_FAILED',
@@ -78,9 +79,9 @@ app.post('/logout', async (c) => {
         apiUrl: c.env.MOCHA_USERS_SERVICE_API_URL,
         apiKey: c.env.MOCHA_USERS_SERVICE_API_KEY,
       });
-    } catch (error) {
+    } catch (_error) {
       // Log error but don't fail the logout
-      console.error('Failed to delete session:', error);
+      console.error('Failed to delete session:', _error);
     }
   }
 

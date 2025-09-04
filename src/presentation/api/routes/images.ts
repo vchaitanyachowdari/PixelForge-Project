@@ -4,6 +4,10 @@ import { authMiddleware } from '@getmocha/users-service/backend';
 import { GenerationRequestSchema, calculateCreditCost } from '../../../shared/types';
 import { ApiContext, createSuccessResponse, createErrorResponse } from '../types';
 
+interface UserBalanceRecord {
+  wallet_balance: number;
+}
+
 const app = new Hono<ApiContext>();
 
 // Generate image endpoint
@@ -29,7 +33,7 @@ app.post('/generate', authMiddleware, zValidator('json', GenerationRequestSchema
       'SELECT wallet_balance FROM users WHERE id = ?'
     ).bind(user.id).all();
 
-    const currentBalance = (results[0] as any)?.wallet_balance || 0;
+    const currentBalance = (results[0] as unknown as UserBalanceRecord)?.wallet_balance || 0;
 
     if (currentBalance < rupeesCost) {
       return c.json(
@@ -125,7 +129,8 @@ app.get('/', authMiddleware, async (c) => {
 
     return c.json(createSuccessResponse(results, 'Images retrieved successfully'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'IMAGES_FETCH_FAILED',

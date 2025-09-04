@@ -43,17 +43,17 @@ export class D1UserRepository implements IUserRepository {
     return { ...user, id, createdAt: now, updatedAt: now };
   }
 
-  async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
+  async update(): Promise<UserEntity> {
     // Implementation for update
     throw new Error('Not implemented');
   }
 
-  async updateWalletBalance(id: string, amount: number): Promise<UserEntity> {
+  async updateWalletBalance(): Promise<UserEntity> {
     // Implementation for wallet balance update
     throw new Error('Not implemented');
   }
 
-  private mapToEntity(row: any): UserEntity {
+  private mapToEntity(row: Record<string, unknown>): UserEntity {
     return {
       id: row.id,
       email: row.email,

@@ -2,6 +2,20 @@ import { Hono } from 'hono';
 import { authMiddleware } from '@getmocha/users-service/backend';
 import { ApiContext, createSuccessResponse, createErrorResponse } from '../types';
 
+// Database record interfaces
+interface UserDbRecord {
+  id: string;
+  email: string;
+  name: string | null;
+  picture: string | null;
+  wallet_balance: number;
+  auto_recharge_enabled: number;
+  auto_recharge_threshold: number;
+  auto_recharge_amount: number;
+  created_at: string;
+  updated_at: string;
+}
+
 const app = new Hono<ApiContext>();
 
 // Get current user profile
@@ -41,7 +55,7 @@ app.get('/me', authMiddleware, async (c) => {
         'SELECT * FROM users WHERE id = ?'
       ).bind(user.id).all();
       
-      const userRecord = newUserResults[0] as any;
+      const userRecord = newUserResults[0] as unknown as UserDbRecord;
 
       return c.json(createSuccessResponse({
         id: user.id,
@@ -55,7 +69,7 @@ app.get('/me', authMiddleware, async (c) => {
       }, 'User profile retrieved'));
     }
 
-    const userRecord = results[0] as any;
+    const userRecord = results[0] as unknown as UserDbRecord;
 
     return c.json(createSuccessResponse({
       id: user.id,
@@ -68,7 +82,8 @@ app.get('/me', authMiddleware, async (c) => {
       autoRechargeAmount: userRecord.auto_recharge_amount,
     }, 'User profile retrieved'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'USER_FETCH_FAILED',
@@ -109,7 +124,8 @@ app.put('/me', authMiddleware, async (c) => {
 
     return c.json(createSuccessResponse(null, 'User profile updated'));
 
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return c.json(
       createErrorResponse(
         'USER_UPDATE_FAILED',

@@ -92,7 +92,7 @@ export function sanitizeInput() {
         .replace(/on\w+=/gi, '');
     };
     
-    const sanitizeObject = (obj: any): any => {
+    const sanitizeObject = (obj: unknown): unknown => {
       if (typeof obj === 'string') {
         return sanitizeString(obj);
       }
@@ -100,7 +100,7 @@ export function sanitizeInput() {
         return obj.map(sanitizeObject);
       }
       if (obj && typeof obj === 'object') {
-        const sanitized: any = {};
+        const sanitized: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(obj)) {
           sanitized[key] = sanitizeObject(value);
         }
@@ -115,7 +115,8 @@ export function sanitizeInput() {
         const body = await c.req.json();
         // Store sanitized body for later use
         c.set('sanitizedBody', sanitizeObject(body));
-      } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error) {
         // Invalid JSON - let validation middleware handle it
       }
     }

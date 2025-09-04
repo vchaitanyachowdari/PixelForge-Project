@@ -1,4 +1,5 @@
 import { UserEntity, GeneratedImageEntity } from '../entities';
+import { WalletTransaction } from '../../shared/types';
 
 // Repository Interfaces
 export interface IUserRepository {
@@ -18,6 +19,6 @@ export interface IImageRepository {
 
 export interface IWalletRepository {
   getBalance(userId: string): Promise<number>;
-  addTransaction(transaction: any): Promise<void>;
-  getTransactions(userId: string, limit?: number): Promise<any[]>;
+  addTransaction(transaction: Omit<WalletTransaction, 'id' | 'createdAt'>): Promise<void>;
+  getTransactions(userId: string, limit?: number): Promise<WalletTransaction[]>;
 }
