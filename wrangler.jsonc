@@ -1,0 +1,56 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pixelforge",
+  "main": "./src/worker/index.ts",
+  "compatibility_date": "2025-06-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "minify": true,
+  "assets": {
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pixelforge-production",
+      "database_id": "0198fa01-652b-7dba-8a1c-63591ad17a5d"
+    }
+  ],
+  "vars": {
+    "NODE_ENV": "production",
+    "APP_VERSION": "1.0.0"
+  },
+  "env": {
+    "staging": {
+      "name": "pixelforge-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "pixelforge-staging",
+          "database_id": "staging-database-id"
+        }
+      ],
+      "vars": {
+        "NODE_ENV": "staging",
+        "APP_VERSION": "1.0.0-staging"
+      }
+    },
+    "development": {
+      "name": "pixelforge-dev",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "pixelforge-development",
+          "database_id": "dev-database-id"
+        }
+      ],
+      "vars": {
+        "NODE_ENV": "development",
+        "APP_VERSION": "1.0.0-dev"
+      }
+    }
+  }
+}

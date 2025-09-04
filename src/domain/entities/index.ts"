@@ -1,0 +1,33 @@
+import { z } from 'zod';
+
+// Core Entity Schemas
+export const UserEntitySchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  name: z.string().nullable(),
+  picture: z.string().url().nullable(),
+  walletBalance: z.number().min(0),
+  autoRechargeEnabled: z.boolean().default(false),
+  autoRechargeThreshold: z.number().min(0).default(100),
+  autoRechargeAmount: z.number().min(0).default(500),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const GeneratedImageEntitySchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  originalPrompt: z.string().min(1).max(1000),
+  enhancedPrompt: z.string().nullable(),
+  imageUrl: z.string().url(),
+  resolution: z.enum(['1024x1024', '1920x1080', '1080x1920', '2560x1440', '3840x2160']),
+  generationType: z.enum(['standard', 'lifestyle', 'studio', 'seasonal', 'ecommerce']),
+  creditsUsed: z.number().positive(),
+  status: z.enum(['pending', 'processing', 'completed', 'failed']).default('pending'),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+// Entity Types
+export type UserEntity = z.infer<typeof UserEntitySchema>;
+export type GeneratedImageEntity = z.infer<typeof GeneratedImageEntitySchema>;

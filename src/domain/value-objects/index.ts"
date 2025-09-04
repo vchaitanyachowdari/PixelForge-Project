@@ -1,0 +1,34 @@
+import { z } from 'zod';
+
+// Value Object Schemas
+export const ResolutionSchema = z.enum([
+  '1024x1024', 
+  '1920x1080', 
+  '1080x1920', 
+  '2560x1440', 
+  '3840x2160'
+]);
+
+export const GenerationTypeSchema = z.enum([
+  'standard', 
+  'lifestyle', 
+  'studio', 
+  'seasonal', 
+  'ecommerce'
+]);
+
+export const CurrencyAmountSchema = z.object({
+  amount: z.number().min(0),
+  currency: z.string().length(3).default('INR'),
+});
+
+export const CreditCostSchema = z.object({
+  credits: z.number().positive(),
+  rupees: z.number().positive(),
+});
+
+// Value Object Types
+export type Resolution = z.infer<typeof ResolutionSchema>;
+export type GenerationType = z.infer<typeof GenerationTypeSchema>;
+export type CurrencyAmount = z.infer<typeof CurrencyAmountSchema>;
+export type CreditCost = z.infer<typeof CreditCostSchema>;
